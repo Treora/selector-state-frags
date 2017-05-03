@@ -2,19 +2,18 @@ import Parser from './fragment.js'
 import map from 'lodash.map'
 
 export function uriToSelector(the_uri) {
-    var uri = undefined
-    var fragment = ''
     var splitted = the_uri.split('#')
-
-    if( splitted.length == 2 ) {
-        uri      = splitted[0]
-        fragment = splitted[1]
-    } else {
-        fragment = the_uri
+    if ( splitted.length === 1 ) {
+        // No fragment identifier => no selector/state object
+        return undefined
     }
-    var selector = Parser.parse(fragment)
-    selector.source = uri
-    return selector
+    var uri      = splitted[0]
+    var fragment = splitted[1]
+    var obj = Parser.parse(fragment)
+    if (uri !== '') {
+        obj.source = uri
+    }
+    return obj
 }
 
 export function selectorToUri(obj) {
@@ -66,6 +65,6 @@ export function selectorToUri(obj) {
         fragment = frag('state', obj.state)
     }
 
-    return (uri !== undefined) ? uri + '#' + fragment : fragment
+    return (uri || '') + '#' + fragment
 
 }
