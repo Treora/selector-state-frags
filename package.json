@@ -1,0 +1,22 @@
+{
+  "name": "selector-state-frags",
+  "version": "0.1.0",
+  "description": "Converter between the JSON and the URI+Fragment representation of Selectors and States",
+  "main": "lib/index.js",
+  "scripts": {
+    "build": "npm run pegjs && npm run transpile",
+    "pegjs": "pegjs -o lib/fragment.js src/fragment.pegjs",
+    "prepublish": "npm run build",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "transpile": "babel src -d lib"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.24.1",
+    "babel-core": "^6.24.1",
+    "babel-preset-es2015": "^6.24.1",
+    "pegjs": "^0.10.0"
+  },
+  "dependencies": {
+    "lodash.map": "^4.6.0"
+  }
+}
