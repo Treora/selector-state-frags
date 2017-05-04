@@ -3,6 +3,15 @@
   "version": "0.1.0",
   "description": "Converter between the JSON and the URI+Fragment representation of Selectors and States",
   "main": "lib/index.js",
+  "contributors": [
+    {
+      "name": "Ivan Herman",
+      "email": "ivan@w3.org"
+    },
+    {
+      "name": "Gerben"
+    }
+  ],
   "scripts": {
     "build": "npm run pegjs && npm run transpile",
     "pegjs": "pegjs -o lib/fragment.js src/fragment.pegjs",
