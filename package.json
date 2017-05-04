@@ -5,9 +5,10 @@
   "main": "lib/index.js",
   "scripts": {
     "build": "npm run pegjs && npm run transpile",
-    "pegjs": "pegjs -o lib/fragment.js src/fragment.pegjs",
+    "pegjs": "pegjs -o src/fragment.js src/fragment.pegjs",
     "prepublish": "npm run build",
-    "test": "mocha --compilers js:babel-register",
+    "test": "npm run pegjs && npm run test_src",
+    "test_src": "mocha --compilers js:babel-register",
     "transpile": "babel src -d lib"
   },
   "devDependencies": {

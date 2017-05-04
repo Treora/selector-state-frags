@@ -1,6 +1,6 @@
 import assert from 'assert'
 
-import { selectorToUri, uriToSelector } from '..'
+import { selectorToUri, uriToSelector } from '../src'
 
 // Examples from the spec:
 // https://www.w3.org/TR/selectors-states/#json-examples-converted-to-fragment-identifiers
