@@ -1,3 +1,11 @@
+/**
+ * This software or document includes material copied from or derived from the
+ * [JSON <=> URI selector converter](http://w3c.github.io/web-annotation/selector-note/converter/)
+ * built for demoing the
+ * [Selectors and States](http://w3c.github.io/web-annotation/selector-note/index-respec.html#media_selector)
+ * Note. Copyright © 2017 W3C® (MIT, ERCIM, Keio, Beihang).
+ **/
+
 import Parser from './fragment.js'
 import map from 'lodash.map'
 
