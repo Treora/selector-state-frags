@@ -197,6 +197,13 @@ const pairs = {
         }
     },
 
+    'URI without fragment identifier': {
+        uri: 'https://example.org',
+        obj: {
+            "source": "https://example.org"
+        }
+    },
+
 }
 
 describe('specificResourceToUri', () => {
