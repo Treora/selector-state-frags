@@ -1,6 +1,6 @@
 {
   "name": "selector-state-frags",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Converter between the JSON and the URI+Fragment representation of Selectors and States",
   "main": "lib/index.js",
   "contributors": [
