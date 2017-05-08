@@ -17,6 +17,7 @@
     "build": "npm run pegjs && npm run transpile",
     "pegjs": "pegjs -o src/fragment.js src/fragment.pegjs",
     "prepublish": "npm run build",
+    "postinstall": "postinstall-build lib",
     "test": "npm run pegjs && npm run test_src",
     "test_src": "mocha --compilers js:babel-register",
     "transpile": "babel src -d lib"
@@ -30,6 +31,7 @@
     "pegjs": "^0.10.0"
   },
   "dependencies": {
-    "lodash.map": "^4.6.0"
+    "lodash.map": "^4.6.0",
+    "postinstall-build": "^3.0.1"
   }
 }
