@@ -20,18 +20,17 @@ function isState(selectorOrState) {
 
 export function uriToSpecificResource(the_uri) {
     var splitted = the_uri.split('#')
-    if ( splitted.length === 1 ) {
-        // No fragment identifier => no selector/state object
-        return undefined
-    }
     var uri = splitted[0]
     var fragmentIdentifier = splitted[1]
-    var selectorOrState = parse(fragmentIdentifier)
+
     const specificResource = {
         source: uri,
     }
-    if (isSelector(selectorOrState)) specificResource.selector = selectorOrState
-    if (isState(selectorOrState)) specificResource.state = selectorOrState
+    if (fragmentIdentifier) {
+        var selectorOrState = parse(fragmentIdentifier)
+        if (isSelector(selectorOrState)) specificResource.selector = selectorOrState
+        if (isState(selectorOrState)) specificResource.state = selectorOrState
+    }
     return specificResource
 }
 
@@ -43,7 +42,7 @@ export function specificResourceToUri(specificResource) {
     } else if ( specificResource.state !== undefined ) {
         fragmentIdentifier = stringify(specificResource.state)
     }
-    return (uri || '') + '#' + fragmentIdentifier
+    return (uri || '') + (fragmentIdentifier ? '#' + fragmentIdentifier : '')
 }
 
 // Parse a fragment identifier, return a selector or state object.
