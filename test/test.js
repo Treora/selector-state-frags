@@ -1,6 +1,6 @@
 import assert from 'assert'
 
-import { selectorToUri, uriToSelector } from '../src'
+import { specificResourceToUri, uriToSpecificResource } from '../src'
 
 // Examples from the spec:
 // https://www.w3.org/TR/selectors-states/#json-examples-converted-to-fragment-identifiers
@@ -193,24 +193,25 @@ const pairs = {
                 "start": 12,
                 "end": 795
             },
+            "source": ""
         }
     },
 
 }
 
-describe('selectorToUri', () => {
+describe('specificResourceToUri', () => {
     for (let name in pairs) {
         it(`should properly convert: '${name}'`, () => {
-            let uri = selectorToUri(pairs[name].obj)
+            let uri = specificResourceToUri(pairs[name].obj)
             assert.equal(uri, pairs[name].uri)
         })
     }
 })
 
-describe('uriToSelector', () => {
+describe('uriToSpecificResource', () => {
     for (let name in pairs) {
         it(`should properly convert: '${name}'`, () => {
-            let obj = uriToSelector(pairs[name].uri)
+            let obj = uriToSpecificResource(pairs[name].uri)
             assert.deepEqual(obj, pairs[name].obj)
         })
     }

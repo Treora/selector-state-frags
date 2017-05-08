@@ -9,26 +9,57 @@
 import Parser from './fragment.js'
 import map from 'lodash.map'
 
-export function uriToSelector(the_uri) {
+
+function isSelector(selectorOrState) {
+    return /Selector$/.test(selectorOrState.type)
+}
+
+function isState(selectorOrState) {
+    return /State$/.test(selectorOrState.type)
+}
+
+export function uriToSpecificResource(the_uri) {
     var splitted = the_uri.split('#')
     if ( splitted.length === 1 ) {
         // No fragment identifier => no selector/state object
         return undefined
     }
-    var uri      = splitted[0]
-    var fragment = splitted[1]
-    var obj = Parser.parse(fragment)
-    if (uri !== '') {
-        obj.source = uri
+    var uri = splitted[0]
+    var fragmentIdentifier = splitted[1]
+    var selectorOrState = parse(fragmentIdentifier)
+    const specificResource = {
+        source: uri,
     }
-    return obj
+    if (isSelector(selectorOrState)) specificResource.selector = selectorOrState
+    if (isState(selectorOrState)) specificResource.state = selectorOrState
+    return specificResource
 }
 
-export function selectorToUri(obj) {
+export function specificResourceToUri(specificResource) {
+    const uri = specificResource.source
+    let fragmentIdentifier
+    if ( specificResource.selector !== undefined ) {
+        fragmentIdentifier = stringify(specificResource.selector)
+    } else if ( specificResource.state !== undefined ) {
+        fragmentIdentifier = stringify(specificResource.state)
+    }
+    return (uri || '') + '#' + fragmentIdentifier
+}
 
-    function state_or_selector(obj) {
+// Parse a fragment identifier, return a selector or state object.
+export function parse(fragmentIdentifier) {
+    const specificResource = Parser.parse(fragmentIdentifier)
+    // The selector/state identity is discarded here. The object's type is
+    // relied upon to convey this knowledge.
+    const selectorOrState = specificResource.selector || specificResource.state
+    return selectorOrState
+}
+
+// Turn a selector or state object into a fragment identifier.
+export function stringify(selectorOrState) {
+    function state_or_selector(selectorOrState) {
         // Deciding whether the object is a selector or a state...
-        return (obj.type === 'TimeState' || obj.type === 'HttpRequestState') ? 'state' : 'selector'
+        return (isState(selectorOrState)) ? 'state' : 'selector'
     }
 
     function encode_value( val ) {
@@ -42,7 +73,7 @@ export function selectorToUri(obj) {
             .replace(/%3C/gi,'<')
     }
 
-    function frag(fname, obj) {
+    function frag(fname, selectorOrState) {
         function key_val(val, key) {
             // Create either a key=val string or, for some specific key values
             // calls recursively the fragment generator with that key.
@@ -57,22 +88,14 @@ export function selectorToUri(obj) {
             }
         }
 
-        if( typeof(obj) === 'string' ) {
+        if( typeof(selectorOrState) === 'string' ) {
             // in practice: this is a uri
-            return fname + '=' + encode_value(obj)
+            return fname + '=' + encode_value(selectorOrState)
         } else {
-            return fname + '(' + map(obj, key_val) + ')'
+            return fname + '(' + map(selectorOrState, key_val) + ')'
         }
     }
 
-    var uri = obj.source
-    var fragment
-    if ( obj.selector !== undefined ) {
-        fragment = frag('selector', obj.selector)
-    } else if ( obj.state !== undefined ) {
-        fragment = frag('state', obj.state)
-    }
-
-    return (uri || '') + '#' + fragment
-
+    if (isSelector(selectorOrState)) return frag('selector', selectorOrState)
+    if (isState(selectorOrState)) return frag('state', selectorOrState)
 }
