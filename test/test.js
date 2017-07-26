@@ -222,4 +222,16 @@ describe('uriToSpecificResource', () => {
             assert.deepEqual(obj, pairs[name].obj)
         })
     }
+
+    it('should cleanly handle other types of fragment identifiers', () => {
+        const obj = uriToSpecificResource('https://example.com/page#section4')
+        const expected = {
+            source: 'https://example.com/page',
+            selector: {
+                type: 'FragmentSelector',
+                value: 'section4',
+            }
+        }
+        assert.deepEqual(obj, expected)
+    })
 })
