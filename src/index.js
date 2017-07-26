@@ -27,9 +27,21 @@ export function uriToSpecificResource(the_uri) {
         source: uri,
     }
     if (fragmentIdentifier) {
-        var selectorOrState = parse(fragmentIdentifier)
-        if (isSelector(selectorOrState)) specificResource.selector = selectorOrState
-        if (isState(selectorOrState)) specificResource.state = selectorOrState
+        try {
+            var selectorOrState = parse(fragmentIdentifier)
+            if (isSelector(selectorOrState)) specificResource.selector = selectorOrState
+            if (isState(selectorOrState)) specificResource.state = selectorOrState
+        } catch (err) {
+            // Apparently, the fragment identifier was not a serialised selector or state object.
+            // We convert the fragment identifier string to its equivalent selector object.
+            // (https://www.w3.org/TR/2017/NOTE-selectors-states-20170223/#FragmentSelector_def)
+            specificResource.selector = {
+                type: 'FragmentSelector',
+                value: fragmentIdentifier,
+                // According to the spec, we _should_ specify a 'conformsTo' link, but we cannot
+                // know the semantics of this fragmentIdentifier, so we have to omit this relation.
+            }
+        }
     }
     return specificResource
 }
