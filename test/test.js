@@ -187,10 +187,10 @@ const pairs = {
     },
 
     'Fragment identifier without URI': {
-        uri: '#selector(type=TextQuoteSelector,start=12,end=795)',
+        uri: '#selector(type=TextPositionSelector,start=12,end=795)',
         obj: {
             "selector": {
-                "type": "TextQuoteSelector",
+                "type": "TextPositionSelector",
                 "start": 12,
                 "end": 795
             },
