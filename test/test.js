@@ -206,6 +206,18 @@ const pairs = {
     },
 }
 
+const specialCasesToStringify = {
+    'Value with parentheses (to be percent-encoded)': {
+        uri: '#selector(type=TextQuoteSelector,exact=example%20%28with%20parentheses%29)',
+        obj: {
+            selector: {
+                type: 'TextQuoteSelector',
+                exact: 'example (with parentheses)',
+            },
+        },
+    },
+}
+
 const specialCasesToParse = {
     'One closing parenthesis inside a value': {
         uri: '#selector(type=TextQuoteSelector,exact=(not)%20a%20problem)',
@@ -268,10 +280,11 @@ const specialCasesToParseThatFail = {
 };
 
 describe('specificResourceToUri', () => {
-    for (let name in pairs) {
+    const examples = Object.assign({} , pairs, specialCasesToStringify)
+    for (const [name, example] of Object.entries(examples)) {
         it(`should properly convert: '${name}'`, () => {
-            let uri = specificResourceToUri(pairs[name].obj)
-            assert.equal(uri, pairs[name].uri)
+            let uri = specificResourceToUri(example.obj)
+            assert.equal(uri, example.uri)
         })
     }
 })
