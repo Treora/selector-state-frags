@@ -204,7 +204,65 @@ const pairs = {
         }
     },
 
+    'One closing parenthesis inside a value': {
+        uri: '#selector(type=TextQuoteSelector,exact=(not)%20a%20problem)',
+        obj: {
+            source: '',
+            selector: {
+                type: 'TextQuoteSelector',
+                exact: '(not) a problem',
+            },
+        },
+    },
 }
+
+const specialCasesToParse = {
+    'Two closing parentheses inside a value': {
+        uri: '#selector(type=TextQuoteSelector,exact=Hey))%20this%20breaks)',
+        obj: {
+            source: '',
+            selector: {
+                type: 'TextQuoteSelector',
+                exact: 'Hey)) this breaks',
+            },
+        },
+    },
+
+    'Two closing parentheses: one of value, one of selector': {
+        uri: '#selector(type=TextQuoteSelector,exact=example%20(that%20fails))',
+        obj: {
+            source: '',
+            selector: {
+                type: 'TextQuoteSelector',
+                exact: 'example (that fails)',
+            },
+        },
+    },
+
+    'Three closing parentheses: one of the value, two of nested selectors': {
+        uri: `
+            #selector(
+                type=RangeSelector,
+                startSelector=selector(type=TextQuoteSelector,exact=(but),
+                endSelector=selector(type=TextQuoteSelector,exact=crazy))
+            )
+            `.replace(/\s/g, ''),
+        obj: {
+            source: '',
+            selector: {
+                type: 'RangeSelector',
+                startSelector: {
+                    type: 'TextQuoteSelector',
+                    exact: '(but',
+                },
+                endSelector: {
+                    type: 'TextQuoteSelector',
+                    exact: 'crazy)',
+                },
+            },
+        },
+    },
+};
 
 describe('specificResourceToUri', () => {
     for (let name in pairs) {
@@ -234,4 +292,13 @@ describe('uriToSpecificResource', () => {
         }
         assert.deepEqual(obj, expected)
     })
+
+    // FIXME These tests are known to fail. Seems impossible to parse
+    // them with PEG.js. See <https://github.com/w3c/web-annotation/issues/443>
+    for (const [name, example] of Object.entries(specialCasesToParse)) {
+        it.skip(`should parse special case: '${name}'`, () => {
+            let obj = uriToSpecificResource(example.uri)
+            assert.deepEqual(obj, example.obj)
+        })
+    }
 })
