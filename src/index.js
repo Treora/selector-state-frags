@@ -61,8 +61,6 @@ function encode(string) {
         .replace(/#/g,'%23')
         .replace(/,/g,'%2C')
         .replace(/=/g,'%3D')
-        .replace(/%5B/gi,'[')
-        .replace(/%5D/gi,']')
-        .replace(/%3E/gi,'>')
-        .replace(/%3C/gi,'<')
+        .replace(/\(/g,'%28')
+        .replace(/\)/g,'%29')
 }
