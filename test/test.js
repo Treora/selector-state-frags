@@ -4,6 +4,7 @@ import { specificResourceToUri, uriToSpecificResource } from '../src'
 
 // Examples from the spec:
 // https://www.w3.org/TR/selectors-states/#json-examples-converted-to-fragment-identifiers
+// One difference with the spec: we percent-encode the characters < > [ ] inside fragments.
 const pairs = {
 
     'Example 2 <=> 16: Fragment selector': {
@@ -19,7 +20,7 @@ const pairs = {
     },
 
     'Example 3 <=> 17: CSS selector': {
-        uri: 'http://example.org/page1.html#selector(type=CssSelector,value=%23elemid%20>%20.elemclass%20+%20p)',
+        uri: 'http://example.org/page1.html#selector(type=CssSelector,value=%23elemid%20%3E%20.elemclass%20+%20p)',
         obj: {
             "source": "http://example.org/page1.html",
             "selector": {
@@ -30,7 +31,7 @@ const pairs = {
     },
 
     'Example 4 <=> 18: XPath selector': {
-        uri: 'http://example.org/page1.html#selector(type=XPathSelector,value=/html/body/p[2]/table/tr[2]/td[3]/span)',
+        uri: 'http://example.org/page1.html#selector(type=XPathSelector,value=/html/body/p%5B2%5D/table/tr%5B2%5D/td%5B3%5D/span)',
         obj: {
             "source": "http://example.org/page1.html",
             "selector": {
@@ -89,7 +90,7 @@ const pairs = {
     },
 
     'Example 9 <=> 23: SVG selector; embedded SVG': {
-        uri: 'http://example.org/map1#selector(type=SvgSelector,value=<svg:svg>%20...%20</svg:svg>)',
+        uri: 'http://example.org/map1#selector(type=SvgSelector,value=%3Csvg:svg%3E%20...%20%3C/svg:svg%3E)',
         obj: {
             "source": "http://example.org/map1",
             "selector": {
@@ -100,7 +101,7 @@ const pairs = {
     },
 
     'Example 10 <=> 24: Range selector': {
-        uri: 'http://example.org/page1.html#selector(type=RangeSelector,startSelector=selector(type=XPathSelector,value=//table[1]/tr[1]/td[2]),endSelector=selector(type=XPathSelector,value=//table[1]/tr[1]/td[4]))',
+        uri: 'http://example.org/page1.html#selector(type=RangeSelector,startSelector=selector(type=XPathSelector,value=//table%5B1%5D/tr%5B1%5D/td%5B2%5D),endSelector=selector(type=XPathSelector,value=//table%5B1%5D/tr%5B1%5D/td%5B4%5D))',
         obj: {
             "source": "http://example.org/page1.html",
             "selector": {
@@ -203,7 +204,9 @@ const pairs = {
             "source": "https://example.org"
         }
     },
+}
 
+const specialCasesToParse = {
     'One closing parenthesis inside a value': {
         uri: '#selector(type=TextQuoteSelector,exact=(not)%20a%20problem)',
         obj: {
@@ -216,7 +219,7 @@ const pairs = {
     },
 }
 
-const specialCasesToParse = {
+const specialCasesToParseThatFail = {
     'Two closing parentheses inside a value': {
         uri: '#selector(type=TextQuoteSelector,exact=Hey))%20this%20breaks)',
         obj: {
@@ -293,9 +296,16 @@ describe('uriToSpecificResource', () => {
         assert.deepEqual(obj, expected)
     })
 
+    for (const [name, example] of Object.entries(specialCasesToParse)) {
+        it(`should parse special case: '${name}'`, () => {
+            let obj = uriToSpecificResource(example.uri)
+            assert.deepEqual(obj, example.obj)
+        })
+    }
+
     // FIXME These tests are known to fail. Seems impossible to parse
     // them with PEG.js. See <https://github.com/w3c/web-annotation/issues/443>
-    for (const [name, example] of Object.entries(specialCasesToParse)) {
+    for (const [name, example] of Object.entries(specialCasesToParseThatFail)) {
         it.skip(`should parse special case: '${name}'`, () => {
             let obj = uriToSpecificResource(example.uri)
             assert.deepEqual(obj, example.obj)
