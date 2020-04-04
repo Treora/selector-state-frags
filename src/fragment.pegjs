@@ -18,8 +18,6 @@ start =
 top
     = "state" "(" p:params ")"      { return { state: p } }
     / "selector" "(" p:params ")"   { return { selector: p } }
-    / "state=" v:value              { return { state: v } }
-    / "selector=" v:value           { return { selector: v } }
 
 params
     = k1: key_value_pair k2:("," key_value_pair)*
