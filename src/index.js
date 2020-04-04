@@ -57,6 +57,9 @@ export function stringify(selectorOrState) {
 }
 
 function encode(string) {
+    // Besides required percent-encoding of required characters, also encode parentheses, because
+    // parsers like our own can choke on them. Note that for our parser, only encoding any closing
+    // parenthesis at the end of a value — i.e. /\)$/ — would have sufficed.
     return encodeURI(string)
         .replace(/#/g,'%23')
         .replace(/,/g,'%2C')
