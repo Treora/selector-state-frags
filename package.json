@@ -1,8 +1,9 @@
 {
   "name": "selector-state-frags",
   "version": "0.2.1",
-  "description": "Converter between the JSON and the URI+Fragment representation of Selectors and States",
+  "description": "Converter between the JSON and the URI+Fragment representation of Web Annotation Selectors and States",
   "main": "lib/index.js",
+  "module": "src/index.js",
   "contributors": [
     {
       "name": "Ivan Herman",
@@ -16,22 +17,38 @@
   "scripts": {
     "build": "npm run pegjs && npm run transpile",
     "pegjs": "pegjs -o src/fragment.js src/fragment.pegjs",
-    "prepublish": "npm run build",
-    "postinstall": "postinstall-build lib",
+    "prepare": "npm run build",
     "test": "npm run pegjs && npm run test_src",
-    "test_src": "mocha --compilers js:babel-register",
+    "test_src": "NODE_ENV=test mocha --require @babel/register",
     "transpile": "babel src -d lib"
   },
   "devDependencies": {
-    "babel-cli": "^6.24.1",
-    "babel-core": "^6.24.1",
-    "babel-preset-es2015": "^6.24.1",
-    "babel-register": "^6.24.1",
-    "mocha": "^3.3.0",
+    "@babel/cli": "^7.8.4",
+    "@babel/core": "^7.9.0",
+    "@babel/preset-env": "^7.9.0",
+    "@babel/register": "^7.9.0",
+    "mocha": "^7.1.1",
     "pegjs": "^0.10.0"
   },
-  "dependencies": {
-    "lodash.map": "^4.6.0",
-    "postinstall-build": "^3.0.1"
+  "dependencies": {},
+  "babel": {
+    "retainLines": true,
+    "presets": [
+      "@babel/preset-env"
+    ],
+    "env": {
+      "test": {
+        "presets": [
+          [
+            "@babel/preset-env",
+            {
+              "targets": {
+                "node": "current"
+              }
+            }
+          ]
+        ]
+      }
+    }
   }
 }
