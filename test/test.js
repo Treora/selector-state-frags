@@ -229,6 +229,17 @@ const specialCasesToParse = {
             },
         },
     },
+
+    'Other valid special characters inside a value': {
+        uri: `#selector(type=TextQuoteSelector,exact=these%20/:+@.\-!$&;*_~';?(%20are%20valid.)`,
+        obj: {
+            source: '',
+            selector: {
+                type: 'TextQuoteSelector',
+                exact: `these /:+@.\-!$&;*_~';?( are valid.`,
+            },
+        },
+    }
 }
 
 const specialCasesToParseThatFail = {
