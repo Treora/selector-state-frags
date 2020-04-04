@@ -277,23 +277,23 @@ const specialCasesToParseThatFail = {
             },
         },
     },
-};
+}
 
 describe('specificResourceToUri', () => {
-    const examples = Object.assign({} , pairs, specialCasesToStringify)
+    const examples = { ...pairs, ...specialCasesToStringify }
     for (const [name, example] of Object.entries(examples)) {
         it(`should properly convert: '${name}'`, () => {
-            let uri = specificResourceToUri(example.obj)
+            const uri = specificResourceToUri(example.obj)
             assert.equal(uri, example.uri)
         })
     }
 })
 
 describe('uriToSpecificResource', () => {
-    for (let name in pairs) {
+    for (const [name, example] of Object.entries(pairs)) {
         it(`should properly convert: '${name}'`, () => {
-            let obj = uriToSpecificResource(pairs[name].uri)
-            assert.deepEqual(obj, pairs[name].obj)
+            const obj = uriToSpecificResource(example.uri)
+            assert.deepEqual(obj, example.obj)
         })
     }
 
@@ -311,7 +311,7 @@ describe('uriToSpecificResource', () => {
 
     for (const [name, example] of Object.entries(specialCasesToParse)) {
         it(`should parse special case: '${name}'`, () => {
-            let obj = uriToSpecificResource(example.uri)
+            const obj = uriToSpecificResource(example.uri)
             assert.deepEqual(obj, example.obj)
         })
     }
@@ -320,7 +320,7 @@ describe('uriToSpecificResource', () => {
     // them with PEG.js. See <https://github.com/w3c/web-annotation/issues/443>
     for (const [name, example] of Object.entries(specialCasesToParseThatFail)) {
         it.skip(`should parse special case: '${name}'`, () => {
-            let obj = uriToSpecificResource(example.uri)
+            const obj = uriToSpecificResource(example.uri)
             assert.deepEqual(obj, example.obj)
         })
     }
